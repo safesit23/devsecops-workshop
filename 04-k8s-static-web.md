@@ -1,18 +1,6 @@
 # Static Website on Kubernetes Workshop
 
-## Prerequisites
-
-* Linux Terminal, Google Cloud Shell, MacOS Terminal, or WSL2 on Windows
-* Docker
-* Docker Compose
-* Docker Registry such as Docker Hub, Nexus, GitLab Docker Registry, GitHub Docker Registry, or JFrog
-* kubectl command
-* Your own Kubernetes Cluster
-* kubeconfig with create and full privilege control on namespaces
-* To play with service type Ingress, you need to deploy Nginx Ingress Controller and map external ip address with domain
-* Your own text editor such as Vim or VSCode
-
-## Prepare Repository
+## 01-Prepare Repository
 
 * Create `opsta-web` repository on your own GitHub
 * Add SSH Key to your GitHub account on <https://github.com/settings/keys>

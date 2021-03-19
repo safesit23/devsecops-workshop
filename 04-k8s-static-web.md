@@ -9,7 +9,7 @@ Create Repository and push repository
 ssh-keygen
 cat ~/.ssh/id_rsa.pub
 ```
-3. Add SSH Key to your GitHub account on <https://github.com/settings/keys> [Ref](https://github.com/opsta/devsecops-workshop/blob/master/docs/02-git.md#push-repository-to-github)
+3. Add SSH Key to your GitHub account on <https://github.com/settings/keys> ดูวิธีทำได้ที่ [Ref](https://github.com/opsta/devsecops-workshop/blob/master/docs/02-git.md#push-repository-to-github)
 4. Initial Git CLI
 ````
 git config --global user.email "62130500[xxx]@mail.kmutt.ac.th"

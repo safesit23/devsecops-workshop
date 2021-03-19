@@ -31,7 +31,7 @@ git branch -M main
 git push -u origin main
 ````
 ## 02-Docker
-### Create Dockerfile and docker-compose.yml
+### Create Dockerfile and docker-compose.yml (Build)
 
 1. Create `Dockerfile`
 
@@ -54,7 +54,7 @@ services:
 3. Run `docker-compose up` !!Dont't forget to update [Docker-Compose](https://github.com/opsta/devsecops-workshop/blob/master/docs/04-docker-compose.md#install-docker-compose)
 * Web Preview on port 8080 to test
 
-### Push Docker Image to GitHub Docker Registry
+### Push Docker Image to GitHub Docker Registry (Ship)
 
 1. ใน https://github.com/ คลิกเมนูที่รูปโปรไฟล์แล้วเลือก `Feature preview` > `Improved container support` > แล้วกดเพื่อ Enable
 2. ไปที่ Setting > Developer Setting > Personal access tokens หรือกดที่ <https://github.com/settings/tokens> แล้วเลือก Generate new personal token โดยตั้งชื่อ Notes เพื่อบอกว่าใช้ทำอะไรเช่น INT209 โดยเลือก
@@ -63,8 +63,8 @@ services:
 3. Copy token ที่ได้แล้วนำไปใช้ในข้อ 4 !! ถ้าทำหายจะต้อง delete แล้วทำสร้างใหม่เท่านั้น
 4. กลับไปที่ Cloudshell แล้วพิมพ์คำสั่งดังนี้
 ```bash
-export TOKEN=[CHANGE to TOKEN]
-export GITHUB_USER=[CHANGE to GITHUB_USER]
+export TOKEN=[TOKEN]
+export GITHUB_USER=[GITHUB_USER]
 echo $TOKEN | docker login ghcr.io --password-stdin --username $GITHUB_USER
 docker push ghcr.io/$GITHUB_USER/opsta-web:dev
 ```

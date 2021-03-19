@@ -69,3 +69,138 @@ echo $TOKEN | docker login ghcr.io --password-stdin --username $GITHUB_USER
 docker push ghcr.io/$GITHUB_USER/opsta-web:dev
 ```
 หมายเหตุ 2 คำสั่งล่างไม่ต้องเปลี่ยน command
+
+## 03-Kubernetes
+### Preparing
+```bash
+gcloud container clusters get-credentials k8s --project zcloud-cicd --zone asia-southeast1-a
+kubectl create namespace student[X]-opsta-dev
+kubectl config set-context $(kubectl config current-context) --namespace=student[X]-opsta-dev
+```
+
+### Create Secret to pull Docker Image from GitHub Docker Private Registry
+```bash
+# See the Docker credentials file
+cat ~/.docker/config.json
+# Show secret
+kubectl get secret
+# Create Docker credentials Kubernetes Secret
+kubectl create secret generic registry-github \
+  --from-file=.dockerconfigjson=$HOME/.docker/config.json \
+  --type=kubernetes.io/dockerconfigjson
+```
+<b>อธิบาย</b> ลักษณะการเก็บของ secret เป็น key และ value
+```bash
+# See newly created secret
+kubectl get secret
+kubectl describe secret registry-github
+```
+โดยจะมี Data ใน Secret
+```
+Name:         registry-github
+Namespace:    student168-opsta-dev
+Labels:       <none>
+Annotations:  <none>
+Type:  kubernetes.io/dockerconfigjson
+Data
+====
+.dockerconfigjson:  307 bytes
+```
+
+### Create Kubernetes Manifest File
+1. สร้าง Folder k8s ภายใต้ directory เพื่อเก็บ manifest file โดยใช้คำสั่ง `mkdir k8s`
+2. สร้างไฟล์ 3 ไฟล์
+* Create `opsta-deployment.yaml` file inside `k8s` directory with below content
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opsta-dev-web
+  namespace: student[X]-opsta-dev
+  labels:
+    app: opsta-dev-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opsta-dev-web
+  template:
+    metadata:
+      labels:
+        app: opsta-dev-web
+    spec:
+      containers:
+      - name: opsta-dev-web
+        image: ghcr.io/[GITHUB_USER]/opsta-web:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: web-port
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+      imagePullSecrets:
+      - name: registry-github
+```
+
+* Create `opsta-service.yaml` file inside `k8s` directory with below content
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: opsta-dev-web
+  namespace: student[X]-opsta-dev
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: opsta-dev-web
+```
+
+* Create `opsta-ingress.yaml` file inside `k8s` directory with below content
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  name: opsta-dev-web
+  namespace: student[X]-opsta-dev
+spec:
+  rules:
+  - host: dev.opsta.net
+    http:
+      paths:
+      - path: /student[X]/opsta(/|$)(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: opsta-dev-web
+            port:
+              number: 80
+```
+3. Create deployment resource
+```bash
+kubectl apply -f k8s/
+```
+
+4. Check status of each resource
+```bash
+kubectl get deployment,service,ingress
+```
+
+* Try to access <https://dev.opsta.net/student[X]/opsta> to check the deployment
+* Commit and push your code

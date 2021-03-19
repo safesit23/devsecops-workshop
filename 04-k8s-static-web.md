@@ -79,6 +79,7 @@ kubectl config set-context $(kubectl config current-context) --namespace=student
 ```
 
 ### Create Secret to pull Docker Image from GitHub Docker Private Registry
+* Secret มีหลายรูปแบบโดยเราเลือกของ Registry GitHub
 ```bash
 # See the Docker credentials file
 cat ~/.docker/config.json
@@ -95,7 +96,7 @@ kubectl create secret generic registry-github \
 kubectl get secret
 kubectl describe secret registry-github
 ```
-โดยจะมี Data ใน Secret
+เมื่อ describe จะมี Data ใน Secret
 ```
 Name:         registry-github
 Namespace:    student168-opsta-dev
@@ -152,8 +153,8 @@ spec:
       - name: registry-github
 ```
 <b>อธิบาย</b>
-> imagePullSecrets นั้นจะดึงที่เชื่อมต่อ registry-github
-> livenessProbe เป็น Healthcheck
+- imagePullSecrets นั้นจะดึง secret จากที่สร้าง `registry-github` ไว้
+- imagePullPolicy: Always เพื่อป้องกัน code version เก่า
 
 * Create `opsta-service.yaml` file inside `k8s` directory with below content
 

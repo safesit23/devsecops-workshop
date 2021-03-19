@@ -107,7 +107,7 @@ Data
 .dockerconfigjson:  307 bytes
 ```
 
-### Create Kubernetes Manifest File
+##  04 - Create Kubernetes Manifest File (Run)
 1. สร้าง Folder k8s ภายใต้ directory เพื่อเก็บ manifest file โดยใช้คำสั่ง `mkdir k8s`
 2. สร้างไฟล์ 3 ไฟล์
 * Create `opsta-deployment.yaml` file inside `k8s` directory with below content
@@ -151,6 +151,9 @@ spec:
       imagePullSecrets:
       - name: registry-github
 ```
+<b>อธิบาย</b>
+> imagePullSecrets นั้นจะดึงที่เชื่อมต่อ registry-github
+> livenessProbe เป็น Healthcheck
 
 * Create `opsta-service.yaml` file inside `k8s` directory with below content
 
@@ -192,6 +195,10 @@ spec:
             port:
               number: 80
 ```
+<b>อธิบาย</b>
+* สร้าง Ingress แล้วเข้าผ่าน domain dev.opsta.net ที่เป็น load balancer ที่ใช้ร่วมกัน โดยต้องผ่าน path /student[X]/opsta ซึ่งจะเชื่อมต่อกับ service ที่ชื่อว่า opsta-dev-web
+* ซึ่ง path (/|$)(.*) จะเชื่อมกับ nginx.ingress.kubernetes.io/rewrite-target: /$2
+
 3. Create deployment resource
 ```bash
 kubectl apply -f k8s/

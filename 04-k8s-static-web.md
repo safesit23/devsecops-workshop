@@ -1,32 +1,35 @@
 # Static Website on Kubernetes Workshop
 
-## 01-Prepare Repository
+## 01-Preparation Repository
+Create Repository and push repository
 
-* Create `opsta-web` repository on your own GitHub
-* Add SSH Key to your GitHub account on <https://github.com/settings/keys>
-
+1. Create `opsta-web` repository on your own GitHub
+2. gen ssh-key
 ```bash
 ssh-keygen
+cat ~/.ssh/id_rsa.pub
 ```
-
-* Initial Opsta HTML Static Website
-
-```bash
+3. Add SSH Key to your GitHub account on <https://github.com/settings/keys> [Ref](https://github.com/opsta/devsecops-workshop/blob/master/docs/02-git.md#push-repository-to-github)
+4. Initial Git CLI
+````
+git config --global user.email "62130500[xxx]@mail.kmutt.ac.th"
+git config --global user.name "[MYFIRSTNAME MYLASTNAME]"
+````
+5. Initial Opsta HTML Static Website
+````
 wget https://github.com/opsta/opsta-www.github.io/archive/gh-pages.zip
 unzip gh-pages.zip
 mkdir opsta-web
-find opsta-www.github.io-gh-pages -type f \
-  -exec sed -i 's!https://www.opsta.co.th/!https://dev.opsta.co.th/student150/opsta/!g' {} \;
 mv opsta-www.github.io-gh-pages opsta-web/src
 cd opsta-web
 ls -l
 git init
 git add .
 git commit -m "First Initial"
-git remote add origin git@github.com:winggundamth/opsta-web.git
+git remote add origin git@github.com:[GITHUB_USER]/opsta-web.git
 git branch -M main
 git push -u origin main
-```
+````
 
 ## Create Dockerfile and docker-compose.yml
 

@@ -56,15 +56,16 @@ services:
 
 ### Push Docker Image to GitHub Docker Registry
 
-* Enable `Feature preview` > `Improved container support`
-* Generate new personal token from <https://github.com/settings/tokens>
+1. ใน https://github.com/ คลิกเมนูที่รูปโปรไฟล์แล้วเลือก `Feature preview` > `Improved container support` > แล้วกดเพื่อ Enable
+2. ไปที่ Setting > Developer Setting > Personal access tokens หรือกดที่ <https://github.com/settings/tokens> แล้วเลือก Generate new personal token โดยตั้งชื่อ Notes เพื่อบอกว่าใช้ทำอะไรเช่น INT209 โดยเลือก
   * repo
   * write:packages
-* Copy token
-
+3. Copy token ที่ได้แล้วนำไปใช้ในข้อ 4 !! ถ้าทำหายจะต้อง delete แล้วทำสร้างใหม่เท่านั้น
+4. กลับไปที่ Cloudshell แล้วพิมพ์คำสั่งดังนี้
 ```bash
-export TOKEN=CHANGEME
-export GITHUB_USER=CHANGEME
+export TOKEN=[CHANGE to TOKEN]
+export GITHUB_USER=[CHANGE to GITHUB_USER]
 echo $TOKEN | docker login ghcr.io --password-stdin --username $GITHUB_USER
 docker push ghcr.io/$GITHUB_USER/opsta-web:dev
 ```
+หมายเหตุ 2 คำสั่งล่างไม่ต้องเปลี่ยน command
